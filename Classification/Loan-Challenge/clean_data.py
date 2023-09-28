@@ -8,6 +8,8 @@ from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 
 
 
+###Function used to eliminate the categorical features that have been eliminated for the specified reasons.
+# Returns only the categorical features that will be used.###
 def clean_categorical_data(data):
   # Binary variable with 8 value of 'y' and 500k+ of 'n'
   data.drop(['pymnt_plan', 'application_type'], axis=1, inplace=True)
@@ -19,10 +21,8 @@ def clean_categorical_data(data):
   # Dropping because of high cardinality
   data.drop(['emp_title', 'title', 'batch_enrolled'], axis=1, inplace=True)
 
-
   #Dropping because it wasn't found any pattern between the state and the loan status:
   data.drop(['zip_code', 'addr_state', 'sub_grade'], axis = 1, inplace = True)
-
 
   # Categorical features:
   data['term'] = data['term'].apply(lambda x: int(x.split(' ')[0]))
@@ -36,10 +36,10 @@ def clean_categorical_data(data):
 
   categorical_variables = ['term', 'emp_length', 'initial_list_status']
 
-
   return data[categorical_variables]
 
 
+#Label encodes the categorical features and generates a dictionary with a LabelEncoder for each feature to be used to prepare the testing data.
 def labelencode_categorical_data(data):
 
   categorical_variables = data.columns
@@ -54,9 +54,9 @@ def labelencode_categorical_data(data):
 
 
 
+
 def clean_numerical_data(data):
   numerical_variables = ['last_week_pay', 'loan_amnt', 'funded_amnt', 'dti', 'int_rate', 'annual_inc', 'delinq_2yrs', 'inq_last_6mths', 'open_acc', 'total_rec_int', 'pub_rec', 'last_week_pay', 'revol_util', 'acc_now_delinq', 'tot_coll_amt', 'tot_cur_bal', 'total_rev_hi_lim']
-
 
   #Determines how many weeks since last payment for the loan.
   def last_week_pay_parse(x):
@@ -68,7 +68,8 @@ def clean_numerical_data(data):
 
   data['last_week_pay'] = data['last_week_pay'].apply(lambda x: last_week_pay_parse(x))
 
-
+  #It was found that most of the numerical features had a consistent number of outliers and also, null values.
+  #To fill these values, the mean of the values between the non-outliers values was calculated.
   for variable in numerical_variables:
     q1 = data[variable].quantile(0.25)
     q3 = data[variable].quantile(0.75)
@@ -76,29 +77,25 @@ def clean_numerical_data(data):
     if q1 == 0 and q3 == 0:
       data[variable].fillna(0.0, inplace=True)
     else:
+
       iqr = q3 - q1
       limit1 = q1 - 1.5 * iqr
       limit2 = q3 + 1.5 * iqr
 
-      # Column to obtain the mean from is divided in chunks to make it more accesible
-      # to calculate the mean
-      data_divided = np.array_split(data[variable], 100)
-      means = []
-
-      for data_div in data_divided:
-        data_div = np.array(data_div)
-        means.append(
-          np.nanmean(
-            np.extract(
-              (data_div > limit1) & (data_div < limit2),
-              arr = data_div)
-          ),
+      #mean is extracted for that variable and then, used to fill the nan.
+      mean = np.nanmean(
+        np.extract(
+          (data[variable] >= limit1) &
+          (data[variable] <= limit2),
+          arr = data[variable]
         )
-
-      data[variable].fillna((sum(means) / len(means)), inplace=True)
+      )
+      data[variable].fillna(mean, inplace=True)
 
   return data[numerical_variables]
 
+
+###It was observed that it was possible to reduce the number of features by combining them to obtain ratios that will also add insights. ###
 def feature_engineering(data):
 
   data['inc_loan_ratio'] = (data['annual_inc'] / data['loan_amnt'].apply(lambda x: 1 if x == 0 else x)).astype(np.float16)
@@ -111,6 +108,9 @@ def feature_engineering(data):
   return data
 
 
+
+###The numerical features were scaling between 0 and 1 to improve the model's efficiency of prediction.
+# This returns the numerical variables scaled and the scaler that will be later used for the testing data.###
 def min_max_scaling(data):
   min_max_scaler = MinMaxScaler()
   min_max_scaler.fit(data)
@@ -122,25 +122,25 @@ train_data = pd.read_csv('train_indessa.csv')
 
 train_data.drop('member_id', axis = 1, inplace = True)
 
+#Categorical features are processed and cleaned:
 clean_categorical_data = clean_categorical_data(train_data)
 encoded_categorical_data, label_encoders = labelencode_categorical_data(clean_categorical_data)
 resulting_categorical_columns = list(encoded_categorical_data.columns)
 
-
+#Numerical features are processed and cleaned:
 clean_numerical_data = clean_numerical_data(train_data)
 featured_engineered_data = feature_engineering(clean_numerical_data)
-
 scaled_numerical_data, min_max_scaler = min_max_scaling(featured_engineered_data)
 
-
+#Data is finally combined :
 data = pd.concat([encoded_categorical_data, scaled_numerical_data], axis=1)
 data.columns = resulting_categorical_columns + list(scaled_numerical_data.columns)
 
-
 data['loan_status'] = train_data['loan_status'].astype(np.int8)
 
-data.to_csv('unbalanced_train_data.csv', index = False)
 
+#It was discovered that the dataset had a huge imbalance. Given that there are plenty of rows for each case,
+#rows with the most populated loan status value were randomly eliminated until there were exactly the same of number for both categories.
 rus = RandomUnderSampler(random_state=42)
 y = data['loan_status']
 data.drop('loan_status', axis = 1, inplace = True)
@@ -148,4 +148,6 @@ X, y = rus.fit_resample(data, y)
 
 data = X
 data['loan_status'] = y
+
+#Data is stored to train the model in train_model.py
 data.to_csv('balanced_training_data.csv', index = False)

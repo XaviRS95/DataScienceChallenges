@@ -1,0 +1,6 @@
+https://medium.com/analytics-vidhya/mlops-end-to-end-machine-learning-pipeline-cicd-1a7907698a8e
+https://www.datacamp.com/pricing?period=yearly
+https://www.kaggle.com/datasets/oossiiris/hackerearth-deep-learning-challenge-holidayseason
+https://www.kaggle.com/datasets/yasserh/horse-survival-dataset
+https://www.kaggle.com/competitions/pubg-finish-placement-prediction/data
+https://www.kaggle.com/competitions/tabular-playground-series-jan-2022

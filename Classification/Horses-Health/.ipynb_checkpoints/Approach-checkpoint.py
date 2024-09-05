@@ -7,7 +7,11 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import precision_score, accuracy_score, f1_score, classification_report
-data = pd.read_csv('train.csv')
+from keras.metrics import Precision
+
+
+
+data = pd.read_csv('data/train.csv')
 
 target = data['outcome']
 data.drop(['id', 'hospital_number', 'abdomen'], axis = 1, inplace = True)

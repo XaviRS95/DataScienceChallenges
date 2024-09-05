@@ -7,13 +7,30 @@ This is a collection of all the challenges that I will take in order to learn an
 ### Horses Health:
 https://github.com/XaviRS95/DataScienceChallenges/tree/main/Classification/Horses-Health
 
-Categorical competition from Kaggle. You have to predict the outcome of a horse (lived, died or euthanized) using the provided dataset using f1-score. The URL for this challenge is: https://www.kaggle.com/competitions/playground-series-s3e22 
+Categorical competition from Kaggle. You have to predict the outcome of a horse (lived, died or euthanized) using the provided dataset using f1-score. 
+The URL for this challenge is: https://www.kaggle.com/competitions/playground-series-s3e22
+Additional data was used for the challenge from: https://www.kaggle.com/datasets/yasserh/horse-survival-dataset
 
-So far, my highest punctuation has been of 0.78 using RandomForest. There are still some feature engineering and other techniques that I want to try, since other people have been able to obtain 0.85.
+RandomForest:
+              precision    recall  f1-score   support
 
-When using classification_report, I have noticed that 1 category has a lower precision than the rest (around 0.1), while another has the same problem with the recall. I'm currently working on what is causing this imbalance and how I can solve it, since it might be the key to improve the f1-score to 0.8
+           0       0.78      0.69      0.73       111
+           1       0.85      0.78      0.81        99
+           2       0.71      0.82      0.76       136
+
+    accuracy                           0.77       346
+   macro avg       0.78      0.76      0.77       346
+weighted avg       0.77      0.77      0.77       346
 
 ### Loan Challenge:
 https://github.com/XaviRS95/DataScienceChallenges/tree/main/Classification/Loan-Challenge
 
 Binary classification competition from Hacker Earth where you need to find out if a bank client that asked for a loan will default it or not. For this, a dataset of 600k+ rows is provided and roc-accuracy was the metric used to determine the winner.
+
+### 2912 Titanic:
+https://github.com/XaviRS95/DataScienceChallenges/tree/main/Classification/Titanic-2912
+
+
+### Titanic:
+https://github.com/XaviRS95/DataScienceChallenges/tree/main/Classification/Titanic
+

@@ -19,8 +19,8 @@ RandomForest:
            2       0.71      0.82      0.76       136
 
     accuracy                           0.77       346
-   macro avg       0.78      0.76      0.77       346
-weighted avg       0.77      0.77      0.77       346
+    macro avg       0.78      0.76      0.77       346
+    weighted avg       0.77      0.77      0.77       346
 
 ### Loan Challenge:
 https://github.com/XaviRS95/DataScienceChallenges/tree/main/Classification/Loan-Challenge

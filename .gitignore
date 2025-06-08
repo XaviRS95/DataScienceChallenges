@@ -1,4 +1,4 @@
-Classification/*/raw_data/
+Classification/*/raw_data/*
 mlartifacts
 mlruns
 .venv

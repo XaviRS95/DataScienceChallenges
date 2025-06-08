@@ -51,4 +51,10 @@ Where:
 
 ---
 
-### Results:
+### Models used:
+
+-RandomForestClassifier
+-LogisticRegression
+-GradientBoosting
+-XGBoost
+-SVC
